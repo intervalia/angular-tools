@@ -69,7 +69,7 @@ But this could still, with hundreds of `ng-click` directive cause a massive numb
 
 ##My jQuery Solution
 
-To resolve the many event bindings in jQuery I create a *command handler*. This would utilize the `delegate` version of the `$().on()` funciton. This is done by setting the `$().on()` hander on a parent and specify the children that will cause your code to be called. So with this HTML:
+To resolve the many event bindings in jQuery I create a *command handler*. This would utilize the `delegate` version of the `$().on()` funciton. This is done by setting the `$().on()` handler on a parent and specify the children that will cause your code to be called. So with this HTML:
 
 ```html
 <div class="main-wrapper">
@@ -94,7 +94,7 @@ $(document).ready(function() {
 
 With this code the `click` handler is a delagated handler. Meaning that when the user clicks on the `<button>` the event is delegated to the event handler connected to the `<div>` tag. Now, even with hundreds of buttons, I only have one event handler.
 
-With the example above this may not make sense. But imagine having something that is repeated and the only difference between each of them is an index value or some form of a key value. Take a web-based email application as an example. Each email has it's own unique identifier. If each email had a delete button then you would need an event handler per email. But using the delegate for of `$().on()` we can have one event handler that handles oll of the emails.
+The example above is small enough that what I am describing may not make sense. But imagine having something that is repeated and the only difference between each of them is an index value or some form of a key value. Take a web-based email application as an example. Each email has it's own unique identifier. If each email had a read button and a delete button then you would need an event handler per email. But using the delegate for of `$().on()` we can have one event handler that handles oll of the emails.
 
 ```html
 <div class="mail-shell">
@@ -152,7 +152,7 @@ $(document).ready(function() {
 
 This Angular directive does some of the behind-the-scenes work for you. It figures out what the command `cmd` is and the command data `cmdData` and inserts that into the `$event.data` object. Then it passes $event through to your handler.
 
-The following HTML has the iv-on-cmd directive on the outer `<div>`. This allows one event handler `processCmd()` to handle all of the click events from the three child buttons.
+The following HTML has the `iv-on-cmd` directive on the outer `<div>`. This allows one event handler `processCmd()` to handle all of the click events from the three child buttons.
 
 ```html
 <div data-ng-controller="myCtrl" data-iv-on-cmd="processCmd($event)">
@@ -162,7 +162,7 @@ The following HTML has the iv-on-cmd directive on the outer `<div>`. This allows
 </div>
 ```
 
-The example controller below supplies the `processCmd()` function that is to be accessed any time one of the buttons with the `data-cmd` attribute is clicked on.
+The example controller below supplies the `processCmd()` function that is to be accessed any time the user clicks on one of the buttons with the `data-cmd` attribute.
 
 ```javascript
 angular.module("mine").controller("myCtrl", myCtrl);
@@ -234,6 +234,6 @@ The object `$event.data` will be:
 }
 ```
 
-##jQuery
+##Need for jQuery and not jqLite
 
 This directive requires jQuery and will not work with jqLite. jqLite does not support the delegate mode of the `$().on()` function.
