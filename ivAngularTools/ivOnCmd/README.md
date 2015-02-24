@@ -1,17 +1,21 @@
 Directive iv-on-cmd - Handling many events in one place.
 ===================
 
-`iv-on-cmd` is an Angular directive that allows for a single event handler to handle `click` events for all child elements of the element containing the directive `iv-on-cmd` as long as the child elements have the attribute `data-cmd` set.
+\* **This directive requires jQuery and will not work with jqLite** *
 
-The goal of`iv-on-cmd` is to reduce the number of `ng-click` handlers and provide a single common function to handle all of the children.
+##Introduction
 
-##Backstory
+`iv-on-cmd` is an Angular directive that allows for a single event handler to handle click events for all child elements of the element containing the directive `iv-on-cmd` as long as the child elements have the attribute `data-cmd` set.
+
+The goal of `iv-on-cmd` is to reduce the number of `ng-click` handlers and provide a single common function to handle all of the children.
+
+##Background
 
 I have discovered that Angular tends to slow down with too many bindings and I have read articles that indicate that as few as two-thousand bindings can be too many bindings.
 
-I have had several projects where the result of an `ng-repeat` created several hundred to several thousand DOM elements. And each of these elements had between three and thirty bindings. This was way more than the estimated slow-down limit of two thousand.
+I have had several projects where an `ng-repeat` created several hundred to several thousand elements. And each of these elements had between three and thirty bindings. Angular slows down with too many bindings and I have heard that as few as two-thousand bindings can be too many and I had many more then that.
 
-I needed a way to do something I used to do with jQuery. And that is use a single click handler on a wrapper `<div>` that tells me the command to execute for all of the wrapper's children. Using jQuery I would do the following:
+I needed a way to do something I used to do with jQuery. And that is use a single click handler on a wrapper `<div>` that allows me to get the commands for all of the wraper's children. Using jQuery I would do the following:
 
 ```html
 <div class="main-wrapper">
@@ -39,9 +43,9 @@ $(document).ready(function() {
 });
 ```
 
-But when I had hundreds of these buttons, or other DOM elements, it got to be a massive process writing each of these `click` handlers.
+But when I had hundreds of these buttons, or other DOM elements, it got to be a massive process.
 
-Angular helped improve this by allowing you to set the click handler via the `ng-click` directive, like this:
+Angular helped fix this by allowing you to set the click handler via the `ng-click` directive, like this:
 
 ```html
 <div class="main-wrapper" data-ng-controller="myCtrl">
@@ -51,6 +55,7 @@ Angular helped improve this by allowing you to set the click handler via the `ng
 ```
 
 Then in the controller code I would do this:
+
 ```javascript
 angular.module("mine").controller("myCtrl", myCtrl);
 myCtrl.$inject = ["$scope"];
@@ -65,7 +70,7 @@ function myCtrl($scope) {
 }
 ```
 
-But this could still, with hundreds of `ng-click` directives cause a massive number of bindings to occur.
+But this could still, with hundreds of `ng-click` directives, cause a massive number of bindings to occur.
 
 ##My jQuery Solution
 
@@ -96,7 +101,7 @@ function processCmd(event) {
     case "cancel":
       // Do something
       break;
-  }
+}
 }
 
 $(document).ready(function() {
@@ -104,7 +109,7 @@ $(document).ready(function() {
 });
 ```
 
-With this code the `click` handler is a delegated handler. Meaning that when the user clicks on the `<button>` the event is delegated to the event handler connected to the `<div>` tag. Now, even with hundreds of buttons, I only have one event handler. And, if buttons are added later, my event handler is still called.
+With this code the `click` handler is a delagated handler. Meaning that when the user clicks on the `<button>` the event is delegated to the event handler connected to the `<div>` tag. But only if the buttons have the attribute `data-cmd`. Now, even with hundreds of buttons, I only have one event handler.
 
 The example above is small enough that what I am describing may not make sense. But imagine having something that is repeated and the only difference between each of them is an index value or some form of a key value. Take a web-based message application as an example. Each message has it's own unique identifier. If each message had a read button and a delete button then you would need two event handlers per message. But using the delegate for of `$().on()` we can have one event handler that handles all of the messages.
 
@@ -162,7 +167,7 @@ $(document).ready(function() {
 
 ##My Angular Directive: `iv-on-cmd`
 
-My Angular directive, `iv-on-cmd`, used the delegate functionality of jQuery to simplify Angular code. It does some of the behind-the-scenes work for you. It figures out what the command `cmd` is and the command data `cmdData` and inserts that into the `$event.data` object. Then it passes $event through to your handler.
+My Angular directive, `iv-on-cmd`, uses the delegate functionality of jQuery to simplify Angular code. It does some of the behind-the-scenes work for you. It figures out what the command `cmd` is and the command data `cmdData` and inserts that into the `$event.data` object. Then it passes $event through to your handler.
 
 The following HTML example has the `iv-on-cmd` directive on the outer `<div>`. This allows one event handler `processCmd()` to handle all of the click events from the three child buttons.
 
