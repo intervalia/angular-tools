@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/intervalia/angular-tools/issues"
   },
-  "homepage": "https://github.com/intervalia/angular-tools"
+  "homepage": "https://github.com/intervalia/angular-tools",
+  "dependencies": {
+    "cli-color": "^1.1.0"
+  }
 }
